@@ -1,0 +1,9 @@
+project:
+  output-dir: _docs
+
+website:
+  title: "mteval"
+  site-url: "https://polyglottech.github.io/mteval"
+  description: "Library to automate machine translation evaluation"
+  repo-branch: main
+  repo-url: "https://github.com/polyglottech/mteval"

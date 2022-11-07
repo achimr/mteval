@@ -5,4 +5,11 @@ d = { 'settings': { 'branch': 'main',
                 'doc_host': 'https://polyglottech.github.io',
                 'git_url': 'https://github.com/polyglottech/mteval',
                 'lib_path': 'mteval'},
-  'syms': {'mteval.core': {'mteval.core.foo': ('core.html#foo', 'mteval/core.py')}}}
+  'syms': { 'mteval.bleu': { 'mteval.bleu.measure_bleu': ('bleu.html#measure_bleu', 'mteval/bleu.py'),
+                             'mteval.bleu.measure_record_bleu': ('bleu.html#measure_record_bleu', 'mteval/bleu.py')},
+            'mteval.core': {'mteval.core.foo': ('core.html#foo', 'mteval/core.py')},
+            'mteval.dataset': { 'mteval.dataset.download_read_set': ('dataset.html#download_read_set', 'mteval/dataset.py'),
+                                'mteval.dataset.get_translated_test_set': ('dataset.html#get_translated_test_set', 'mteval/dataset.py'),
+                                'mteval.dataset.read_own_set': ('dataset.html#read_own_set', 'mteval/dataset.py'),
+                                'mteval.dataset.read_source_ref': ('dataset.html#read_source_ref', 'mteval/dataset.py'),
+                                'mteval.dataset.read_tsv_set': ('dataset.html#read_tsv_set', 'mteval/dataset.py')}}}

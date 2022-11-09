@@ -12,4 +12,3 @@ d = { 'settings': { 'branch': 'main',
                                 'mteval.dataset.read_own_set': ('dataset.html#read_own_set', 'mteval/dataset.py'),
                                 'mteval.dataset.read_source_ref': ('dataset.html#read_source_ref', 'mteval/dataset.py'),
                                 'mteval.dataset.read_tsv_set': ('dataset.html#read_tsv_set', 'mteval/dataset.py')}}}
-

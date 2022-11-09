@@ -62,9 +62,9 @@ def read_own_set(base_path,source_language_code,target_language_code,test_set_na
     source_file = Path(source_path)
     ref_file = Path(ref_path)
     if not source_file.exists():
-        raise FileNotFoundError(errno.ENOENT,os.strerr(errno.ENOENT),source_path) 
+        raise FileNotFoundError(errno.ENOENT,os.strerror(errno.ENOENT),source_path) 
     if not ref_file.exists():
-        raise FileNotFoundError(errno.ENOENT,os.strerr(errno.ENOENT),ref_path) 
+        raise FileNotFoundError(errno.ENOENT,os.strerror(errno.ENOENT),ref_path) 
     
     return read_source_ref(source_path,ref_path)
 

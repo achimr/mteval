@@ -6,7 +6,7 @@ __all__ = ['read_source_ref', 'download_read_set', 'read_own_set', 'get_translat
 # %% ../nbs/02_dataset.ipynb 5
 import sys
 def read_source_ref(source_path,ref_path):
-    # Read the testset into two arrays and return them
+    """Read the testset into two arrays and return them"""
     source_lines = []
     reference_lines = []
     with open(source_path) as source_fh, open(ref_path) as reference_fh :
@@ -70,8 +70,10 @@ def read_own_set(base_path,source_language_code,target_language_code,test_set_na
 
 # %% ../nbs/02_dataset.ipynb 10
 import sys
-def get_translated_test_set(base_path,langpair,sourcelang,targetlang,mtengine,test_set_name,test_date):
+def get_translated_test_set(base_path,sourcelang,targetlang,mtengine,test_set_name,test_date):
+    """Read MT hypothesis translations for specified MT engine"""
     target_lines = []
+    langpair = sourcelang+"-"+targetlang
     output_filename = "hyp_"+mtengine+"."+langpair+"."+targetlang
     from pathlib import Path
     translate_file = Path(base_path+sourcelang+"_"+targetlang+"/"+test_date+"/"+test_set_name+"/"+output_filename)
@@ -91,14 +93,11 @@ import errno
 
 def read_tsv_set(tsv_file):
     """Reads complete evaluation set from TSV file containing source, hypothesis and reference"""
-    if not tsv_file.exists():
-        raise FileNotFoundError(errno.ENOENT,os.strerr(errno.ENOENT),tsv_file) 
-    
     sources = []
     hypotheses = []
     references = []
     line_counter = 0
-    with tsv_file.open() as tsv_fh:
+    with open(tsv_file,"r") as tsv_fh:
         for tsv_line in tsv_fh:
             line_counter += 1
             tsv_line = tsv_line.rstrip()

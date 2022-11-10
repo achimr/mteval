@@ -4,4 +4,7 @@ on:  [workflow_dispatch, pull_request, push]
 jobs:
   test:
     runs-on: ubuntu-latest
+    env:
+        MS_SUBSCRIPTION_KEY: ${{ secrets.MS_SUBSCRIPTION_KEY }}
+        MS_REGION: ${{ secrets.MS_REGION }}
     steps: [uses: fastai/workflows/nbdev-ci@master]

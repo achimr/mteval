@@ -3,9 +3,10 @@
 # %% auto 0
 __all__ = ['microsofttranslate']
 
-# %% ../nbs/05_microsoftmt.ipynb 5
+# %% ../nbs/05_microsoftmt.ipynb 4
 import requests, uuid
 import os
+from dotenv import load_dotenv
 
 class microsofttranslate:
     """
@@ -17,6 +18,15 @@ class microsofttranslate:
 
         This will load the credentials for the Microsoft Translator API from the environment
         """
+        running_in_colab = 'google.colab' in str(get_ipython())
+        homedir = ""
+        if running_in_colab:
+            from google.colab import drive
+            drive.mount('/content/drive')
+            homedir = "/content/drive/MyDrive"
+            # Colab doesn't have a mechanism to set environment variables other than python-dotenv
+            ENV_FILE = homedir+'/secrets/.env'
+            load_dotenv(ENV_FILE)
         self._subscription_key = os.getenv('MS_SUBSCRIPTION_KEY')
         self._region = os.getenv('MS_REGION')
 

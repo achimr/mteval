@@ -16,7 +16,7 @@ class microsofttranslate:
         self._subscription_key = os.getenv('MS_SUBSCRIPTION_KEY')
         self._region = os.getenv('MS_REGION')
 
-    def translate_text(self,source, target, text):
+    def translate_text(self,sourcelang, targetlang, text):
         """Function to translate text into the target language        """
         # Add your subscription key and endpoint
         subscription_key = self._subscription_key
@@ -31,8 +31,8 @@ class microsofttranslate:
 
         params = {
             'api-version': '3.0',
-            'from': source,
-            'to': [target]
+            'from': sourcelang,
+            'to': [targetlang]
         }
         constructed_url = endpoint + path
 

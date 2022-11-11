@@ -3,46 +3,21 @@
 # %% auto 0
 __all__ = ['microsofttranslate']
 
-# %% ../nbs/05_microsoftmt.ipynb 4
+# %% ../nbs/05_microsoftmt.ipynb 6
 import requests, uuid
 import os
-from dotenv import load_dotenv
 
 class microsofttranslate:
     """
     Class to get translations from the Microsoft Translator API
     """
     def __init__(self):
-        """
-        Constructor of microsofttranslate class
-
-        This will load the credentials for the Microsoft Translator API from the environment
-        """
-        running_in_colab = 'google.colab' in str(get_ipython())
-        homedir = ""
-        if running_in_colab:
-            from google.colab import drive
-            drive.mount('/content/drive')
-            homedir = "/content/drive/MyDrive"
-            # Colab doesn't have a mechanism to set environment variables other than python-dotenv
-            ENV_FILE = homedir+'/secrets/.env'
-            load_dotenv(ENV_FILE)
+        """Constructor of microsofttranslate class"""
         self._subscription_key = os.getenv('MS_SUBSCRIPTION_KEY')
         self._region = os.getenv('MS_REGION')
 
     def translate_text(self,source, target, text):
-        """
-        Function to translate text into the target language
-
-        Parameters:
-            source (string): source language identifier as an ISO 639-1 language code. See https://g.co/cloud/translate/v2/translate-reference#supported_languages
-            target (string): target language identifier as an ISO 639-1 language code. See https://g.co/cloud/translate/v2/translate-reference#supported_languages
-            text (string): Source text to be translated
-
-        Returns:
-            hypothesis: Hypothesis translation from Google Translate
-        
-        """
+        """Function to translate text into the target language        """
         # Add your subscription key and endpoint
         subscription_key = self._subscription_key
         endpoint = "https://api.cognitive.microsofttranslator.com"

@@ -7,4 +7,7 @@ jobs:
     env:
         MS_SUBSCRIPTION_KEY: ${{ secrets.MS_SUBSCRIPTION_KEY }}
         MS_REGION: ${{ secrets.MS_REGION }}
+        AWS_DEFAULT_REGION: ${{ secrets.AWS_REGION }}
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
     steps: [uses: fastai/workflows/nbdev-ci@master]

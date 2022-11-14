@@ -6,3 +6,4 @@ website:
       - 02_dataset.ipynb
       - 04_googlemt.ipynb
       - 05_microsoftmt.ipynb
+      - 06_awsmt.ipynb

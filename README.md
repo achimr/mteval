@@ -80,6 +80,18 @@ else:
     homedir = os.getenv('HOME')
 ```
 
+Run the following cell to install `mteval` from PyPI
+
+``` python
+!pip install mteval
+```
+
+Run the following cell to install `mteval` from the Github repository
+
+``` python
+!pip install git+https://github.com/polyglottech/mteval.git
+```
+
 ``` python
 from dotenv import load_dotenv
 

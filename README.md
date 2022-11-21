@@ -7,8 +7,6 @@ mteval
 
 [![](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/polyglottech/mteval/blob/main/nbs/index.ipynb)
 
-Open In Colab
-
 </div>
 
 ## Introduction

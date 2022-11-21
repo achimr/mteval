@@ -3,7 +3,7 @@
 # %% auto 0
 __all__ = ['util']
 
-# %% ../nbs/08_util.ipynb 6
+# %% ../nbs/08_util.ipynb 8
 class util:
     """Class with several utility functions"""
     def __init__(self):

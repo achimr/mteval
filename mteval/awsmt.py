@@ -3,7 +3,7 @@
 # %% auto 0
 __all__ = ['awstranslate']
 
-# %% ../nbs/06_awsmt.ipynb 6
+# %% ../nbs/06_awsmt.ipynb 8
 import os
 import boto3
 import time

@@ -3,7 +3,7 @@
 # %% auto 0
 __all__ = ['read_source_ref', 'download_read_set', 'read_own_set', 'get_translated_test_set', 'read_tsv_set']
 
-# %% ../nbs/02_dataset.ipynb 5
+# %% ../nbs/02_dataset.ipynb 6
 import sys
 def read_source_ref(source_path,ref_path):
     """Read the testset into two arrays and return them"""
@@ -17,7 +17,7 @@ def read_source_ref(source_path,ref_path):
             reference_lines.append(reference_line) 
     return source_lines, reference_lines
 
-# %% ../nbs/02_dataset.ipynb 6
+# %% ../nbs/02_dataset.ipynb 7
 from pathlib import Path
 import sys
 import os
@@ -43,7 +43,7 @@ def download_read_set(base_path,source_language_code,target_language_code,test_s
     
     return read_source_ref(source_path,ref_path)
 
-# %% ../nbs/02_dataset.ipynb 7
+# %% ../nbs/02_dataset.ipynb 8
 from pathlib import Path
 import os
 import errno
@@ -68,7 +68,7 @@ def read_own_set(base_path,source_language_code,target_language_code,test_set_na
     
     return read_source_ref(source_path,ref_path)
 
-# %% ../nbs/02_dataset.ipynb 10
+# %% ../nbs/02_dataset.ipynb 11
 import sys
 def get_translated_test_set(base_path,sourcelang,targetlang,mtengine,test_set_name,test_date):
     """Read MT hypothesis translations for specified MT engine"""
@@ -86,7 +86,7 @@ def get_translated_test_set(base_path,sourcelang,targetlang,mtengine,test_set_na
     else:
         raise FileNotFoundError(errno.ENOENT,os.strerror(errno.ENOENT),translate_file) 
 
-# %% ../nbs/02_dataset.ipynb 12
+# %% ../nbs/02_dataset.ipynb 14
 from pathlib import Path
 import os
 import errno

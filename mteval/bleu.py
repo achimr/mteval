@@ -3,7 +3,7 @@
 # %% auto 0
 __all__ = ['measure_bleu', 'measure_record_bleu']
 
-# %% ../nbs/01_bleu.ipynb 5
+# %% ../nbs/01_bleu.ipynb 6
 from sacrebleu.metrics import BLEU
 def measure_bleu(hypothesis_lines,reference_lines,targetlang,tok=None):
     """Measuring standard BLEU on set of hypothesis and references"""
@@ -13,7 +13,7 @@ def measure_bleu(hypothesis_lines,reference_lines,targetlang,tok=None):
     score_json = score.format(width=2,score_only=False,signature=sig,is_json=True)
     return score_json
 
-# %% ../nbs/01_bleu.ipynb 6
+# %% ../nbs/01_bleu.ipynb 7
 import csv
 import json
 import sys

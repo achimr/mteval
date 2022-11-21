@@ -3,7 +3,7 @@
 # %% auto 0
 __all__ = ['microsofttranslate']
 
-# %% ../nbs/05_microsoftmt.ipynb 6
+# %% ../nbs/05_microsoftmt.ipynb 8
 import requests, uuid
 import os
 

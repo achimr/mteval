@@ -3,7 +3,7 @@
 # %% auto 0
 __all__ = ['deepltranslate']
 
-# %% ../nbs/07_deeplmt.ipynb 6
+# %% ../nbs/07_deeplmt.ipynb 8
 import os
 import deepl
 from pathlib import Path

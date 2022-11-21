@@ -3,7 +3,7 @@
 # %% auto 0
 __all__ = ['cometscoring']
 
-# %% ../nbs/03_comet.ipynb 6
+# %% ../nbs/03_comet.ipynb 7
 import comet
 from comet import download_model, load_from_checkpoint
 from pathlib import Path

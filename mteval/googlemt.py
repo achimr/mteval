@@ -3,7 +3,7 @@
 # %% auto 0
 __all__ = ['googletranslate']
 
-# %% ../nbs/04_googlemt.ipynb 6
+# %% ../nbs/04_googlemt.ipynb 8
 import os
 import six
 from google.cloud import translate

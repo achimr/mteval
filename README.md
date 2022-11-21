@@ -11,6 +11,18 @@ Open In Colab
 
 </div>
 
+## Introduction
+
+This library enables easy, automated machine translation evaluation
+using the evaluation tools
+[sacreBLEU](https://github.com/mjpost/sacrebleu) and
+[COMET](https://github.com/Unbabel/COMET). While the evaluation tools
+readily provide command line access, they lack dataset handling and
+translation of datasets with major online machine translation services.
+This is provided by this `mteval` library along with code that logs
+evaluation results and enables easier automation for multiple datasets
+and MT systems from Python.
+
 ## Install
 
 ### Installing the library from PyPI
@@ -24,7 +36,7 @@ pip install mteval
 This library currently supports the cloud translation services Amazon
 Translate, DeepL, Google Translate and Microsoft Translator. To
 authenticate with the services and configure them, you need to set the
-following enviroment variables
+following enviroment variables:
 
     export GOOGLE_APPLICATION_CREDENTIALS='/path/to/google/credentials/file.json'
     export GOOGLE_PROJECT_ID=''
@@ -78,13 +90,43 @@ if running_in_colab:
     env_file = homedir+'/secrets/.env'
 ```
 
-Also make sure to store the Google Cloud credentials file on Google
+Also make sure to store the Google Cloud credentials JSON file on Google
 Drive, e.g. in the `/content/drive/MyDrive/secrets/` folder.
 
 ## How to use
 
+This is a short example how to translate a few sentences and how to
+score the machine translations with BLEU using human reference
+translations. See the [reference
+documentation](https://polyglottech.github.io/mteval/) for a complete
+list of functions.
+
 ``` python
-1+1
+from mteval.microsoftmt import *
+from mteval.bleu import *
+import json
 ```
 
-    2
+``` python
+sources = ["Puissiez-vous passer une semaine intéressante et enrichissante avec nous.",
+           "Honorables sénateurs, je connais, bien entendu, les références du ministre de l'Environnement et je pense que c'est une personne admirable.",
+           "Il est certain que le renforcement des forces de maintien de la paix et l'envoi d'autres casques bleus ne suffiront pas, compte tenu du mauvais fonctionnement des structures de contrôle et de commandement là-bas."]
+references = ["May you have an interesting and useful week with us.",
+              "Honourable senators, I am, of course, familiar with the credentials of the Minister of the Environment and consider him an admirable person.",
+              "Surely, strengthening and adding more peacekeepers is not sufficient when we know the command and control structures are not working."]
+
+hypotheses = []
+msmt = microsofttranslate()
+for source in sources:
+    translation = msmt.translate_text("fr","en",source)
+    print(translation)
+    hypotheses.append(translation)
+    
+score = json.loads(measure_bleu(hypotheses,references,"en"))
+print(score)
+```
+
+The source texts and references are from the [Canadian Hansard
+corpus](https://www.isi.edu/division3/natural-language/download/hansard/).
+For real-world evaluation, the set would have to be at least 100-200
+segments long.

@@ -7,6 +7,7 @@ __all__ = ['deepltranslate']
 import os
 import deepl
 from pathlib import Path
+from langcodes import *
 
 class deepltranslate:
     """Class to get translations from the DeepL API"""
@@ -14,25 +15,38 @@ class deepltranslate:
         """Constructor of deepltranslate class"""
         self._apikey = os.getenv('DEEPL_API_KEY')
         self._translator = deepl.Translator(self._apikey)
-
-    def translate_text(self,sourcelang, targetlang, text):
-        """Function to translate text into the target language"""
-        source_langid_upper = sourcelang.upper()
-        target_langid_upper = targetlang.upper()
-
-        result = self._translator.translate_text(text,source_lang=source_langid_upper,target_lang=target_langid_upper,split_sentences='off')
-
-        return result.text
+        # Caches for supported source and target language ids
+        self._source_languages = []
+        self._target_languages = []
 
     def check_langpair(self,sourcelang, targetlang):
         """Function to check if the language pair is supported"""
-        source_langid_upper = sourcelang.upper()
-        target_langid_upper = targetlang.upper()
-        supported_source_languages = [lang.code for lang in self._translator.get_source_languages()]
-        supported_target_languages = [lang.code for lang in self._translator.get_target_languages()]
-        
-        if source_langid_upper in supported_source_languages:
-            if target_langid_upper in supported_target_languages:
-                return True
+        if tag_is_valid(sourcelang) and tag_is_valid(targetlang):
+            source_langid_upper = sourcelang.upper()
+            target_langid_upper = targetlang.upper()
+            supported_source_languages = self._source_languages
+            if not supported_source_languages:
+                supported_source_languages = [lang.code for lang in self._translator.get_source_languages()]
+                self._source_languages = supported_source_languages
+            supported_target_languages = self._target_languages
+            if not supported_target_languages:
+                supported_target_languages = [lang.code for lang in self._translator.get_target_languages()]
+                self._target_languages = supported_target_languages
+
+            if source_langid_upper in supported_source_languages:
+                if target_langid_upper in supported_target_languages:
+                    return True
         
         return False
+
+    def translate_text(self,sourcelang, targetlang, text):
+        """Function to translate text into the target language"""
+        translated_text = ""
+        if self.check_langpair(sourcelang,targetlang):
+            source_langid_upper = sourcelang.upper()
+            target_langid_upper = targetlang.upper()
+            result = self._translator.translate_text(text,source_lang=source_langid_upper,target_lang=target_langid_upper,split_sentences='off')
+            translated_text = result.text
+
+        return translated_text
+

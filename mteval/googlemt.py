@@ -7,6 +7,7 @@ __all__ = ['googletranslate']
 import os
 import six
 from google.cloud import translate
+from langcodes import *
 
 class googletranslate:
     """Class to get translations from the Google Translate API"""
@@ -19,20 +20,43 @@ class googletranslate:
         
         self._translate_client = translate.TranslationServiceClient()
         self._parent = f"projects/{project_id}/locations/{location}"
+        self._languages_cache = {}
+        
+    def check_langpair(self, sourcelang, targetlang):
+        client = self._translate_client
+        parent = self._parent
+
+        supported_languages = self._languages_cache
+        # Cached language dictionary empty if not initialized yet
+        if supported_languages == {}:
+            # Supported language codes: https://cloud.google.com/translate/docs/languages
+            response = client.get_supported_languages(parent=parent)
+            for language in response.languages:
+                supported_languages[language.language_code] = {'support_source':language.support_source,'support_target':language.support_target}
+            self._languages_cache = supported_languages
+
+        language_pair_supported = False
+        if tag_is_valid(sourcelang) and tag_is_valid(targetlang):
+            if sourcelang in supported_languages and supported_languages[sourcelang]['support_source']:
+                if targetlang in supported_languages and supported_languages[targetlang]['support_target']:
+                    language_pair_supported = True
+        return language_pair_supported
 
     def translate_text(self,sourcelang, targetlang, text):
         """Function to translate text into the target language"""
         if isinstance(text, six.binary_type):
             text = text.decode("utf-8")
 
-        response = self._translate_client.translate_text(
-            request={
-                "parent": self._parent,
-                "contents": [text],
-                "mime_type": "text/plain",  # mime types: text/plain, text/html
-                "source_language_code": sourcelang,
-                "target_language_code": targetlang,
-            }
-        )
-
-        return response.translations[0].translated_text
+        translated_text = ""
+        if self.check_langpair(sourcelang,targetlang):
+            response = self._translate_client.translate_text(
+                request={
+                    "parent": self._parent,
+                    "contents": [text],
+                    "mime_type": "text/plain",  # mime types: text/plain, text/html
+                    "source_language_code": sourcelang,
+                    "target_language_code": targetlang,
+                }
+            )
+            translated_text = response.translations[0].translated_text
+        return translated_text

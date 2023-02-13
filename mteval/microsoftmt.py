@@ -6,6 +6,7 @@ __all__ = ['microsofttranslate']
 # %% ../nbs/05_microsoftmt.ipynb 8
 import requests, uuid
 import os
+from langcodes import *
 
 class microsofttranslate:
     """
@@ -15,40 +16,71 @@ class microsofttranslate:
         """Constructor of microsofttranslate class"""
         self._subscription_key = os.getenv('MS_SUBSCRIPTION_KEY')
         self._region = os.getenv('MS_REGION')
-
-    def translate_text(self,sourcelang, targetlang, text):
-        """Function to translate text into the target language        """
-        # Add your subscription key and endpoint
-        subscription_key = self._subscription_key
-        endpoint = "https://api.cognitive.microsofttranslator.com"
-
-        # Add your location, also known as region. The default is global.
-        # This is required if using a Cognitive Services resource.
-        location = self._region
-
-        path = '/translate'
-        constructed_url = endpoint + path
-
+        self._endpoint = "https://api.cognitive.microsofttranslator.com"
+        self._languages_cache = []
+        
+    def check_langpair(self, sourcelang, targetlang):
+        """Function to verify if a language pair identified by language ids is supported"""
+        path = '/languages'
+        constructed_url = self._endpoint + path
         params = {
             'api-version': '3.0',
-            'from': sourcelang,
-            'to': [targetlang]
+            'scope': 'translation'
         }
-        constructed_url = endpoint + path
+        
+        supported_languages = self._languages_cache
+        # Cached language array empty if not initialized yet
+        if not supported_languages:
+            # Note that we aren't capturing the ETag from response header for the current language list -
+            # we are caching the list after the first call and assume that it doesn't change over the lifetime
+            # of the class,  we don't persist the list and call the API again when the class is re-instantiated
+            request = requests.get(constructed_url, params=params)
+            response = request.json()
+            supported_languages = response["translation"].keys()
+            self._languages_cache = supported_languages
+            
+        language_pair_supported = False
+        if tag_is_valid(sourcelang) and tag_is_valid(targetlang):
+            if sourcelang in supported_languages and targetlang in supported_languages:
+                language_pair_supported = True
+        
+        return language_pair_supported
 
-        headers = {
-            'Ocp-Apim-Subscription-Key': subscription_key,
-            'Ocp-Apim-Subscription-Region': location,
-            'Content-type': 'application/json',
-            'X-ClientTraceId': str(uuid.uuid4())
-        }
+    def translate_text(self,sourcelang, targetlang, text):
+        """Function to translate text into the target language"""
+        translated_text = ""
+        if self.check_langpair(sourcelang,targetlang):
+            # Add your subscription key and endpoint
+            subscription_key = self._subscription_key
+            endpoint = self._endpoint
 
-        # You can pass more than one object in body.
-        body = [{
-            'text': text
-        }]
+            # Add your location, also known as region. The default is global.
+            # This is required if using a Cognitive Services resource.
+            location = self._region
 
-        request = requests.post(constructed_url, params=params, headers=headers, json=body)
-        response = request.json()
+            path = '/translate'
 
-        return response[0]["translations"][0]["text"]
+            params = {
+                'api-version': '3.0',
+                'from': sourcelang,
+                'to': [targetlang]
+            }
+            constructed_url = endpoint + path
+
+            headers = {
+                'Ocp-Apim-Subscription-Key': self._subscription_key,
+                'Ocp-Apim-Subscription-Region': location,
+                'Content-type': 'application/json',
+                'X-ClientTraceId': str(uuid.uuid4())
+            }
+
+            # You can pass more than one object in body.
+            body = [{
+                'text': text
+            }]
+
+            request = requests.post(constructed_url, params=params, headers=headers, json=body)
+            response = request.json()
+            translated_text = response[0]["translations"][0]["text"]
+
+        return translated_text

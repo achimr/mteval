@@ -8,6 +8,7 @@ import os
 import boto3
 import time
 from pathlib import Path
+from langcodes import *
 
 class awstranslate:
     """Class to get translations from the Amazon Web Service Translate API"""
@@ -15,11 +16,27 @@ class awstranslate:
         """Constructor of awstranslate class"""
         # Authentication via environment variables
         self._translate_client = boto3.client(service_name='translate', use_ssl=True)
+        
+        # Initializing the list of supported languages (source or target)
+        self._supported_langs = [x["LanguageCode"] for x in self._translate_client.list_languages()["Languages"]]
 
-
+    def check_langpair(self, sourcelang, targetlang):
+        """Function to verify if a language pair identified by language ids is supported"""
+        supported = False
+        if tag_is_valid(sourcelang) and tag_is_valid(targetlang):
+            if sourcelang in self._supported_langs and targetlang in self._supported_langs:
+                supported = True
+            
+        return supported
+    
     def translate_text(self,sourcelang, targetlang, text):
         """Function to translate text into the target language"""
-        result = self._translate_client.translate_text(Text=text, SourceLanguageCode=sourcelang, TargetLanguageCode=targetlang)
         
-        return result.get('TranslatedText')
+        translated_text = ""
+        if self.check_langpair(sourcelang,targetlang):
+            result = self._translate_client.translate_text(Text=text, SourceLanguageCode=sourcelang, TargetLanguageCode=targetlang)
+            translated_text = result.get('TranslatedText')
+        
+        return translated_text
+       
 

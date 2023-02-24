@@ -42,6 +42,8 @@ d = { 'settings': { 'branch': 'main',
                                                                                               'mteval/microsoftmt.py'),
                                     'mteval.microsoftmt.microsofttranslate.translate_text': ( 'microsoftmt.html#microsofttranslate.translate_text',
                                                                                               'mteval/microsoftmt.py')},
+            'mteval.ter': { 'mteval.ter.measure_record_ter': ('ter.html#measure_record_ter', 'mteval/ter.py'),
+                            'mteval.ter.measure_ter': ('ter.html#measure_ter', 'mteval/ter.py')},
             'mteval.util': { 'mteval.util.util': ('util.html#util', 'mteval/util.py'),
                              'mteval.util.util.__init__': ('util.html#util.__init__', 'mteval/util.py'),
                              'mteval.util.util.normalize_quotes': ('util.html#util.normalize_quotes', 'mteval/util.py')}}}

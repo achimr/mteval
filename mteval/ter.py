@@ -45,6 +45,7 @@ def measure_ter(hypothesis_lines,reference_lines,normalized=False,no_punct=False
 import csv
 import json
 import sys
+import os
 from pathlib import Path
 def measure_record_ter(hypothesis_lines,reference_lines,sourcelang,targetlang,test_set_name,test_date,mtengine,score_pathname,score_fname,domain='',normalized=False,no_punct=False,asian_support=False,case_sensitive=False):
     """Score hypothesis with TER score and record it to a specified metrics file
@@ -69,7 +70,7 @@ def measure_record_ter(hypothesis_lines,reference_lines,sourcelang,targetlang,te
         Path for results CSV file.
     score_fname : str
         File name for results CSV file.
-    domain : str
+    domain : str, default=''
         Domain string if applicable.
     normalized : bool, default=False
         If `True`, applies basic tokenization to sentences.

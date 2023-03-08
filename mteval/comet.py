@@ -12,10 +12,11 @@ import os
 
 class cometscoring:
     """Class to calculate COMET score (with references)"""
-    def __init__(self,model_name="wmt20-comet-da"):
+    def __init__(self,model_name="wmt20-comet-da",gpus=1):
         """Constructor that downloads and loads the COMET model"""
         model_path = download_model(model_name)
         self.model = load_from_checkpoint(model_path)
+        self.gpus = gpus
 
     def measure_comet(self,source_lines,hypothesis_lines,reference_lines):
         """Function to calculate the comet score"""
@@ -25,7 +26,7 @@ class cometscoring:
             comet_dict = {"src":src,"mt":mt,"ref":ref}
             comet_data.append(comet_dict)
         # Run COMET
-        seg_scores, sys_score = self.model.predict(comet_data, batch_size=8, gpus=1)
+        seg_scores, sys_score = self.model.predict(comet_data, batch_size=8, gpus=self.gpus)
 
         return seg_scores, sys_score
 

@@ -12,11 +12,112 @@ class modernmttranslate:
     """
     Class to get translations from the ModernMT API
     """
-    def __init__(self):
+    def __init__(self,adaptive=False,adaptation_tm=None,reference_tms=None):
         """Constructor of modernmttranslate class"""
         self._subscription_key = os.getenv('MMT_API_KEY')
-        self._endpoint = "https://api.modernmt.com/translate"
+        self._endpoint = "https://api.modernmt.com/"
         self._languages_cache = []
+        self.adaptive = adaptive
+        if adaptive:
+            if adaptation_tm:
+                self._adaptation_tm = adaptation_tm
+            else:
+                self._adaptation_tm = self.create_adaptation_tm()
+                
+    def create_adaptation_tm(self):
+        """Function to create empty translation memory (TM) for adaptative MT.
+        
+        Returns
+        -------
+        int
+            Returns ModernMT ID for created translation memory.
+        
+        """
+        subscription_key = self._subscription_key
+        endpoint = self._endpoint
+
+        path = "memories"
+        params = {
+            'name': str(uuid.uuid4())
+        }
+        constructed_url = endpoint + path
+
+        headers = {
+            'X-HTTP-Method-Override': 'POST',
+            'Content-Type' : 'application/json',
+            'MMT-ApiKey' : self._subscription_key
+        }
+
+        request = requests.post(constructed_url, params=params, headers=headers)
+        # TBD: error checking
+        response = request.json()
+        adaptation_tm_id = response["data"]["id"]
+        
+        return adaptation_tm_id
+    
+    def add_reference_translation(self, tuid, sourcelang, targetlang, source, reference):
+        # TBD: should tuid be an integer or more universally a string?
+        """Function to submit a new reference translation (most often post-edited translation) to the adaptation TM.
+        
+        Parameters
+        ----------
+        tuid: int
+            Unique ID of the translation segment - if it exists, the segment gets overwritten
+        sourcelang : str
+            Source language identifier (BCP-47 format).
+        targetlang : str
+            Target language identifier (BCP-47 format).
+        source: str
+            Source text.
+        reference: str
+            Reference translation, possibly post-edited from machine translation.
+
+        """
+        subscription_key = self._subscription_key
+        endpoint = self._endpoint
+
+        path = "memories/"+str(self._adaptation_tm)+"/content"
+        # Attention: using the same tuid as earlier will overwrite the TM entry
+        params = {
+            'tuid': tuid,
+            'source': sourcelang,
+            'target': targetlang,
+            'sentence': source,
+            'translation': reference
+        }
+        constructed_url = endpoint + path
+
+        headers = {
+            'X-HTTP-Method-Override': 'POST',
+            'Content-Type' : 'application/json',
+            'MMT-ApiKey' : self._subscription_key
+        }
+
+        request = requests.post(constructed_url, params=params, headers=headers)
+        # TBD: error checking
+        response = request.json()
+        
+        # Waiting for the import job is blocking - this is acceptable for evaluation, but probably not for live translation
+        import_job = response["data"]["id"]
+        finished = response["data"]["progress"]
+        while not finished:
+            path = "import-jobs/"+import_job
+            params = {
+            }
+            constructed_url = endpoint + path
+
+            headers = {
+                'X-HTTP-Method-Override': 'GET',
+                'Content-Type' : 'application/json',
+                'MMT-ApiKey' : self._subscription_key
+            }
+
+            request = requests.post(constructed_url, params=params, headers=headers)
+            # TBD: error checking
+            response = request.json()
+            finished = response["data"]["progress"]        
+        
+        return
         
     def check_langpair(self, sourcelang, targetlang):
         """Function to verify if a language pair identified by language ids is supported
@@ -34,7 +135,7 @@ class modernmttranslate:
             Returns `True` if language pair is supported, otherwise `False`.
         
         """
-        path = '/languages'
+        path = 'translate/languages'
         constructed_url = self._endpoint + path
         
         supported_languages = self._languages_cache
@@ -76,13 +177,15 @@ class modernmttranslate:
             subscription_key = self._subscription_key
             endpoint = self._endpoint
 
-            # For single text translation ModernMT doesn't need a sub path
-            path = ""
+            path = "translate"
             params = {
                 'source': sourcelang,
                 'target': targetlang,
                 'q': text
             }
+            if self.adaptive:
+                # TBD: Later need to add reference TMs too
+                params['hints'] = str(self._adaptation_tm)
             constructed_url = endpoint + path
 
             headers = {

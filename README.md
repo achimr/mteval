@@ -44,6 +44,7 @@ following enviroment variables:
     export AWS_ACCESS_KEY_ID=''
     export AWS_SECRET_ACCESS_KEY=''
     export DEEPL_API_KEY=''
+    export MMT_API_KEY=''
 
 #### How to obtain subscription credentials
 

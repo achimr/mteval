@@ -70,11 +70,14 @@ def read_own_set(base_path,source_language_code,target_language_code,test_set_na
 
 # %% ../nbs/02_dataset.ipynb 11
 import sys
-def get_translated_test_set(base_path,sourcelang,targetlang,mtengine,test_set_name,test_date):
+def get_translated_test_set(base_path,sourcelang,targetlang,mtengine,test_set_name,test_date,domain=''):
     """Read MT hypothesis translations for specified MT engine"""
     target_lines = []
     langpair = sourcelang+"-"+targetlang
-    output_filename = "hyp_"+mtengine+"."+langpair+"."+targetlang
+    if domain == '':
+        output_filename = "hyp_"+mtengine+"."+langpair+"."+targetlang
+    else:
+        output_filename = "hyp_"+mtengine+"_"+domain+"."+langpair+"."+targetlang
     from pathlib import Path
     translate_file = Path(base_path+sourcelang+"_"+targetlang+"/"+test_date+"/"+test_set_name+"/"+output_filename)
     if translate_file.exists():

@@ -25,16 +25,13 @@ class modernmttranslate:
                 self._adaptation_tm = self.create_adaptation_tm()
                 
     def create_adaptation_tm(self):
-        """Function to create empty translation memory (TM) for adaptative MT.
-        
-        Parameters
-        ----------
-        
+        """
+        Function to create empty translation memory (TM) for adaptative MT.
+
         Returns
         -------
         int
             Returns ModernMT ID for created translation memory.
-        
         """
         subscription_key = self._subscription_key
         endpoint = self._endpoint
@@ -64,7 +61,7 @@ class modernmttranslate:
         
         Parameters
         ----------
-        tuid : int
+        tuid : str
             Unique ID of the translation segment - if it exists, the segment gets overwritten
         sourcelang : str
             Source language identifier (BCP-47 format).

@@ -77,7 +77,7 @@ def get_translated_test_set(base_path,sourcelang,targetlang,mtengine,test_set_na
     if domain == '':
         output_filename = "hyp_"+mtengine+"."+langpair+"."+targetlang
     else:
-        output_filename = "hyp_"+mtengine+"_"+domain+"."+langpair+"."+targetlang
+        output_filename = "hyp_"+mtengine+"."+domain+"."+langpair+"."+targetlang
     from pathlib import Path
     translate_file = Path(base_path+sourcelang+"_"+targetlang+"/"+test_date+"/"+test_set_name+"/"+output_filename)
     if translate_file.exists():

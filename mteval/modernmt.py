@@ -27,6 +27,9 @@ class modernmttranslate:
     def create_adaptation_tm(self):
         """Function to create empty translation memory (TM) for adaptative MT.
         
+        Parameters
+        ----------
+        
         Returns
         -------
         int
@@ -61,15 +64,15 @@ class modernmttranslate:
         
         Parameters
         ----------
-        tuid: int
+        tuid : int
             Unique ID of the translation segment - if it exists, the segment gets overwritten
         sourcelang : str
             Source language identifier (BCP-47 format).
         targetlang : str
             Target language identifier (BCP-47 format).
-        source: str
+        source : str
             Source text.
-        reference: str
+        reference : str
             Reference translation, possibly post-edited from machine translation.
 
         """

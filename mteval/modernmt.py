@@ -194,7 +194,7 @@ class modernmttranslate:
                 'MMT-ApiKey' : self._subscription_key
             }
 
-            request = requests.post(constructed_url, params=params, headers=headers)
+            request = requests.get(constructed_url, params=params, headers=headers)
             response = request.json()
             translated_text = response["data"]["translation"]
 

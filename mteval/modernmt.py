@@ -4,9 +4,10 @@
 __all__ = ['modernmttranslate']
 
 # %% ../nbs/10_modernmt.ipynb 7
-import requests, uuid
+import uuid
 import os
 from langcodes import *
+from modernmt import ModernMT
 
 class modernmttranslate:
     """
@@ -14,15 +15,15 @@ class modernmttranslate:
     """
     def __init__(self,adaptive=False,adaptation_tm=None,reference_tms=None):
         """Constructor of modernmttranslate class"""
-        self._subscription_key = os.getenv('MMT_API_KEY')
-        self._endpoint = "https://api.modernmt.com/"
+        # TBD: there is probably a good way to read the version from the configuration in setup.py
+        self._mmt = ModernMT(os.getenv('MMT_API_KEY'),"mteval","0.0.1")
         self._languages_cache = []
         self.adaptive = adaptive
         if adaptive:
             if adaptation_tm:
-                self._adaptation_tm = adaptation_tm
+                self._adaptation_tm_id = adaptation_tm
             else:
-                self._adaptation_tm = self.create_adaptation_tm()
+                self._adaptation_tm_id = self.create_adaptation_tm()
                 
     def create_adaptation_tm(self):
         """
@@ -33,25 +34,9 @@ class modernmttranslate:
         int
             Returns ModernMT ID for created translation memory.
         """
-        subscription_key = self._subscription_key
-        endpoint = self._endpoint
-
-        path = "memories"
-        params = {
-            'name': str(uuid.uuid4())
-        }
-        constructed_url = endpoint + path
-
-        headers = {
-            'X-HTTP-Method-Override': 'POST',
-            'Content-Type' : 'application/json',
-            'MMT-ApiKey' : self._subscription_key
-        }
-
-        request = requests.post(constructed_url, params=params, headers=headers)
-        # TBD: error checking
-        response = request.json()
-        adaptation_tm_id = response["data"]["id"]
+        
+        adaptation_tm = self._mmt.memories.create(str(uuid.uuid4()))
+        adaptation_tm_id = adaptation_tm.id
         
         return adaptation_tm_id
     
@@ -61,7 +46,7 @@ class modernmttranslate:
         
         Parameters
         ----------
-        tuid : str
+        tuid :
             Unique ID of the translation segment - if it exists, the segment gets overwritten
         sourcelang : str
             Source language identifier (BCP-47 format).
@@ -73,49 +58,14 @@ class modernmttranslate:
             Reference translation, possibly post-edited from machine translation.
 
         """
-        subscription_key = self._subscription_key
-        endpoint = self._endpoint
-
-        path = "memories/"+str(self._adaptation_tm)+"/content"
-        # Attention: using the same tuid as earlier will overwrite the TM entry
-        params = {
-            'tuid': tuid,
-            'source': sourcelang,
-            'target': targetlang,
-            'sentence': source,
-            'translation': reference
-        }
-        constructed_url = endpoint + path
-
-        headers = {
-            'X-HTTP-Method-Override': 'POST',
-            'Content-Type' : 'application/json',
-            'MMT-ApiKey' : self._subscription_key
-        }
-
-        request = requests.post(constructed_url, params=params, headers=headers)
-        # TBD: error checking
-        response = request.json()
+        import_job = self._mmt.memories.add(self._adaptation_tm_id, sourcelang, targetlang, source, reference, str(tuid))
         
         # Waiting for the import job is blocking - this is acceptable for evaluation, but probably not for live translation
-        import_job = response["data"]["id"]
-        finished = response["data"]["progress"]
+        import_job_id = import_job.id
+        finished = import_job.progress
         while not finished:
-            path = "import-jobs/"+import_job
-            params = {
-            }
-            constructed_url = endpoint + path
-
-            headers = {
-                'X-HTTP-Method-Override': 'GET',
-                'Content-Type' : 'application/json',
-                'MMT-ApiKey' : self._subscription_key
-            }
-
-            request = requests.post(constructed_url, params=params, headers=headers)
-            # TBD: error checking
-            response = request.json()
-            finished = response["data"]["progress"]        
+            import_job = self._mmt.memories.get_import_status(import_job_id)
+            finished = import_job.progress   
         
         return
         
@@ -135,16 +85,10 @@ class modernmttranslate:
             Returns `True` if language pair is supported, otherwise `False`.
         
         """
-        path = 'translate/languages'
-        constructed_url = self._endpoint + path
-        
         supported_languages = self._languages_cache
         # Cached language array empty if not initialized yet
         if not supported_languages:
-            # Not passing API key here, because authentication isn't required for this API endpoint
-            request = requests.get(constructed_url)
-            response = request.json()
-            supported_languages = response["data"]
+            supported_languages = self._mmt.list_supported_languages()
             self._languages_cache = supported_languages
             
         language_pair_supported = False
@@ -173,29 +117,11 @@ class modernmttranslate:
         """
         translated_text = ""
         if self.check_langpair(sourcelang,targetlang):
-            # Add your subscription key and endpoint
-            subscription_key = self._subscription_key
-            endpoint = self._endpoint
-
-            path = "translate"
-            params = {
-                'source': sourcelang,
-                'target': targetlang,
-                'q': text
-            }
             if self.adaptive:
                 # TBD: Later need to add reference TMs too
-                params['hints'] = str(self._adaptation_tm)
-            constructed_url = endpoint + path
-
-            headers = {
-                'X-HTTP-Method-Override': 'GET',
-                'Content-Type' : 'application/json',
-                'MMT-ApiKey' : self._subscription_key
-            }
-
-            request = requests.get(constructed_url, params=params, headers=headers)
-            response = request.json()
-            translated_text = response["data"]["translation"]
+                translation = self._mmt.translate(sourcelang, targetlang, text,hints=[self._adaptation_tm_id])
+            else:
+                translation = self._mmt.translate(sourcelang, targetlang, text)
+            translated_text = translation.translation
 
         return translated_text

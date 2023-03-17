@@ -24,6 +24,13 @@ class modernmttranslate:
                 self._adaptation_tm_id = adaptation_tm
             else:
                 self._adaptation_tm_id = self.create_adaptation_tm()
+            self._reference_tms_ids = []
+            if reference_tms:
+                if type(reference_tms) is list:
+                    self._reference_tms_ids = reference_tms
+                else:
+                    raise Exception("Parameter reference_tms needs to be a list of reference TM ids")
+                
                 
     def create_adaptation_tm(self):
         """
@@ -98,7 +105,7 @@ class modernmttranslate:
         
         return language_pair_supported
 
-    def translate_text(self,sourcelang, targetlang, text):
+    def translate_text(self,sourcelang, targetlang, text,timeout=5):
         """Function to translate text into the target language
         
         Parameters
@@ -109,6 +116,8 @@ class modernmttranslate:
             Target language identifier (BCP-47 format).
         text : str
             Source text that is to be translated.
+        timeout : int
+            Timeout for translation request in seconds.
             
         Returns
         -------
@@ -117,11 +126,19 @@ class modernmttranslate:
         """
         translated_text = ""
         if self.check_langpair(sourcelang,targetlang):
+            hints=[]
             if self.adaptive:
-                # TBD: Later need to add reference TMs too
-                translation = self._mmt.translate(sourcelang, targetlang, text,hints=[self._adaptation_tm_id])
+                hints = [self._adaptation_tm_id]+self._reference_tms_ids
+            max_retries = 3
+            for _ in range(max_retries):
+                try:
+                    translation = self._mmt.translate(sourcelang, targetlang, text,hints=hints,options={"timeout":timeout*1000})
+                    #translation = self._mmt.translate(sourcelang, targetlang, text,hints=hints)
+                    break
+                except TranslationTimeoutException:
+                    pass
             else:
-                translation = self._mmt.translate(sourcelang, targetlang, text)
+                raise Exception("Translation failed afer "+max_retries+" retries.")
             translated_text = translation.translation
 
         return translated_text

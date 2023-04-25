@@ -12,7 +12,7 @@ import os
 
 class cometscoring:
     """Class to calculate COMET score (with references)"""
-    def __init__(self,model_name="wmt20-comet-da",gpus=1):
+    def __init__(self,model_name="Unbabel/wmt22-comet-da",gpus=1):
         """Constructor that downloads and loads the COMET model"""
         model_path = download_model(model_name)
         self.model = load_from_checkpoint(model_path)
@@ -26,7 +26,9 @@ class cometscoring:
             comet_dict = {"src":src,"mt":mt,"ref":ref}
             comet_data.append(comet_dict)
         # Run COMET
-        seg_scores, sys_score = self.model.predict(comet_data, batch_size=8, gpus=self.gpus)
+        outputs = self.model.predict(comet_data, batch_size=8, gpus=self.gpus)
+        sys_score = outputs.system_score
+        seg_scores = outputs.scores
 
         return seg_scores, sys_score
 

@@ -1,0 +1,93 @@
+[
+  {
+    "objectID": "googlemt.html",
+    "href": "googlemt.html",
+    "title": "googlemt",
+    "section": "",
+    "text": "source\n\ngoogletranslate\n\n googletranslate ()\n\nClass to get translations from the Google Translate API\n\nsource\n\n\ngoogletranslate.check_langpair\n\n googletranslate.check_langpair (sourcelang, targetlang)\n\n\nsource\n\n\ngoogletranslate.translate_text\n\n googletranslate.translate_text (sourcelang, targetlang, text)\n\nFunction to translate text into the target language"
+  },
+  {
+    "objectID": "deeplmt.html",
+    "href": "deeplmt.html",
+    "title": "deeplmt",
+    "section": "",
+    "text": "source\n\ndeepltranslate\n\n deepltranslate ()\n\nClass to get translations from the DeepL API\n\nsource\n\n\ndeepltranslate.translate_text\n\n deepltranslate.translate_text (sourcelang, targetlang, text)\n\nFunction to translate text into the target language\n\nsource\n\n\ndeepltranslate.check_langpair\n\n deepltranslate.check_langpair (sourcelang, targetlang)\n\nFunction to check if the language pair is supported"
+  },
+  {
+    "objectID": "awsmt.html",
+    "href": "awsmt.html",
+    "title": "awsmt",
+    "section": "",
+    "text": "source\n\nawstranslate\n\n awstranslate ()\n\nClass to get translations from the Amazon Web Service Translate API\n\nsource\n\n\nawstranslate.check_langpair\n\n awstranslate.check_langpair (sourcelang, targetlang)\n\nFunction to verify if a language pair identified by language ids is supported\n\nsource\n\n\nawstranslate.translate_text\n\n awstranslate.translate_text (sourcelang, targetlang, text)\n\nFunction to translate text into the target language"
+  },
+  {
+    "objectID": "comet.html",
+    "href": "comet.html",
+    "title": "comet",
+    "section": "",
+    "text": "source\n\ncometscoring\n\n cometscoring (model_name='Unbabel/wmt22-comet-da', gpus=1)\n\nClass to calculate COMET score (with references)\n\nsource\n\n\ncometscoring.measure_comet\n\n cometscoring.measure_comet (source_lines, hypothesis_lines,\n                             reference_lines)\n\nFunction to calculate the comet score\n\nsource\n\n\ncometscoring.measure_record_comet\n\n cometscoring.measure_record_comet (source_lines, hypothesis_lines,\n                                    reference_lines, sourcelang,\n                                    targetlang, test_set_name, test_date,\n                                    mtengine, score_pathname, score_fname,\n                                    domain='')\n\nFunction to score hypothesis with COMET score and record score to a specified metrics file"
+  },
+  {
+    "objectID": "dataset.html",
+    "href": "dataset.html",
+    "title": "dataset",
+    "section": "",
+    "text": "source\n\nread_source_ref\n\n read_source_ref (source_path, ref_path)\n\nRead the testset into two arrays and return them\n\nsource\n\n\ndownload_read_set\n\n download_read_set (base_path, source_language_code, target_language_code,\n                    test_set_name)\n\nDownloads data set if it is not cached. Return source and reference arrays.\n\nsource\n\n\nread_own_set\n\n read_own_set (base_path, source_language_code, target_language_code,\n               test_set_name, date='')\n\nReads already present non-sacrebleu test set. Return source and reference arrays.\n\nsource\n\n\nget_translated_test_set\n\n get_translated_test_set (base_path, sourcelang, targetlang, mtengine,\n                          test_set_name, test_date, domain='')\n\nRead MT hypothesis translations for specified MT engine\n\nsource\n\n\nread_tsv_set\n\n read_tsv_set (tsv_file)\n\nReads complete evaluation set from TSV file containing source, hypothesis and reference"
+  },
+  {
+    "objectID": "index.html#introduction",
+    "href": "index.html#introduction",
+    "title": "mteval",
+    "section": "Introduction",
+    "text": "Introduction\nThis library enables easy, automated machine translation evaluation using the evaluation tools sacreBLEU and COMET. While the evaluation tools readily provide command line access, they lack dataset handling and translation of datasets with major online machine translation services. This is provided by this mteval library along with code that logs evaluation results and enables easier automation for multiple datasets and MT systems from Python."
+  },
+  {
+    "objectID": "index.html#install",
+    "href": "index.html#install",
+    "title": "mteval",
+    "section": "Install",
+    "text": "Install\n\nInstalling the library from PyPI\npip install mteval\n\n\nSetting up Cloud authentication and parameters in the environment\nThis library currently supports the cloud translation services Amazon Translate, DeepL, Google Translate and Microsoft Translator. To authenticate with the services and configure them, you need to set the following enviroment variables:\nexport GOOGLE_APPLICATION_CREDENTIALS='/path/to/google/credentials/file.json'\nexport GOOGLE_PROJECT_ID=''\nexport MS_SUBSCRIPTION_KEY=''\nexport MS_REGION=''\nexport AWS_DEFAULT_REGION=''\nexport AWS_ACCESS_KEY_ID=''\nexport AWS_SECRET_ACCESS_KEY=''\nexport DEEPL_API_KEY=''\nexport MMT_API_KEY=''\n\nHow to obtain subscription credentials\n\nAmazon Translate\nDeepL\nGoogle Translate\nMicrosoft Translator\n\nYou can set the environment values by adding above export statements to your .bashrc file in Linux or in Jupyter notebook by adding environment variables to the kernel configuration file kernel.json.\nThis library has only been tested on Linux, not Windows or MacOS.\n\n\n\nOn Google Colab: Loading the environment from a .env file\nGoogle Colab, which is a hosted cloud solution for Jupyter notebooks with GPU runtimes, doesn’t support persistent environment variables. The environment variables can be stored in a .env file on Google Drive and loaded at each start of a notebook using mteval.\n\nimport os\nrunning_in_colab = 'google.colab' in str(get_ipython())\nif running_in_colab:\n    from google.colab import drive\n    drive.mount('/content/drive')\n    homedir = \"/content/drive/MyDrive\"\nelse:\n    homedir = os.getenv('HOME')\n\nRun the following cell to install mteval from PyPI\n\n!pip install mteval\n\nRun the following cell to install mteval from the Github repository\n\n!pip install git+https://github.com/polyglottech/mteval.git\n\n\nfrom dotenv import load_dotenv\n\nif running_in_colab:\n    # Colab doesn't have a mechanism to set environment variables other than python-dotenv\n    env_file = homedir+'/secrets/.env'\n\nAlso make sure to store the Google Cloud credentials JSON file on Google Drive, e.g. in the /content/drive/MyDrive/secrets/ folder."
+  },
+  {
+    "objectID": "index.html#how-to-use",
+    "href": "index.html#how-to-use",
+    "title": "mteval",
+    "section": "How to use",
+    "text": "How to use\nThis is a short example how to translate a few sentences and how to score the machine translations with BLEU using human reference translations. See the reference documentation for a complete list of functions.\n\nfrom mteval.microsoftmt import *\nfrom mteval.bleu import *\nimport json\n\n\nsources = [\"Puissiez-vous passer une semaine intéressante et enrichissante avec nous.\",\n           \"Honorables sénateurs, je connais, bien entendu, les références du ministre de l'Environnement et je pense que c'est une personne admirable.\",\n           \"Il est certain que le renforcement des forces de maintien de la paix et l'envoi d'autres casques bleus ne suffiront pas, compte tenu du mauvais fonctionnement des structures de contrôle et de commandement là-bas.\"]\nreferences = [\"May you have an interesting and useful week with us.\",\n              \"Honourable senators, I am, of course, familiar with the credentials of the Minister of the Environment and consider him an admirable person.\",\n              \"Surely, strengthening and adding more peacekeepers is not sufficient when we know the command and control structures are not working.\"]\n\nhypotheses = []\nmsmt = microsofttranslate()\nfor source in sources:\n    translation = msmt.translate_text(\"fr\",\"en\",source)\n    print(translation)\n    hypotheses.append(translation)\n    \nscore = json.loads(measure_bleu(hypotheses,references,\"en\"))\nprint(score)\n\nThe source texts and references are from the Canadian Hansard corpus. For real-world evaluation, the set would have to be at least 100-200 segments long."
+  },
+  {
+    "objectID": "bleu.html",
+    "href": "bleu.html",
+    "title": "bleu",
+    "section": "",
+    "text": "source\n\nmeasure_bleu\n\n measure_bleu (hypothesis_lines, reference_lines, targetlang, tok=None)\n\nMeasuring standard BLEU on set of hypothesis and references\n\nsource\n\n\nmeasure_record_bleu\n\n measure_record_bleu (hypothesis_lines, reference_lines, sourcelang,\n                      targetlang, test_set_name, test_date, mtengine,\n                      score_pathname, score_fname, domain='', tok=None)\n\nScore hypothesis with BLEU score and record it to a specified metrics file"
+  },
+  {
+    "objectID": "microsoftmt.html",
+    "href": "microsoftmt.html",
+    "title": "microsoftmt",
+    "section": "",
+    "text": "source\n\nmicrosofttranslate\n\n microsofttranslate ()\n\nClass to get translations from the Microsoft Translator API\n\nsource\n\n\nmicrosofttranslate.check_langpair\n\n microsofttranslate.check_langpair (sourcelang, targetlang)\n\nFunction to verify if a language pair identified by language ids is supported\n\nsource\n\n\nmicrosofttranslate.translate_text\n\n microsofttranslate.translate_text (sourcelang, targetlang, text)\n\nFunction to translate text into the target language"
+  },
+  {
+    "objectID": "ter.html",
+    "href": "ter.html",
+    "title": "ter",
+    "section": "",
+    "text": "source\n\nmeasure_ter\n\n measure_ter (hypothesis_lines, reference_lines, normalized=False,\n              no_punct=False, asian_support=False, case_sensitive=False)\n\nMeasuring TER on set of hypotheses and references\n\n\n\n\n\n\n\n\n\n\nType\nDefault\nDetails\n\n\n\n\nhypothesis_lines\nList\n\nArray of hypotheses.\n\n\nreference_lines\nList\n\nArray of references.\n\n\nnormalized\nbool\nFalse\nIf True, applies basic tokenization to sentences.\n\n\nno_punct\nbool\nFalse\nIf True, removes punctuations from sentences.\n\n\nasian_support\nbool\nFalse\nIf True, adds support for Asian character processing.\n\n\ncase_sensitive\nbool\nFalse\nIf True, does not lowercase sentences.\n\n\nReturns\nTuple\n\nArray of arrays containing TER score, number of edits and reference length and sacreBLEU TER score in JSON format.\n\n\n\n\nsource\n\n\nmeasure_record_ter\n\n measure_record_ter (hypothesis_lines, reference_lines, sourcelang,\n                     targetlang, test_set_name, test_date, mtengine,\n                     score_pathname, score_fname, domain='',\n                     normalized=False, no_punct=False,\n                     asian_support=False, case_sensitive=False)\n\nScore hypothesis with TER score and record it to a specified metrics file\n\n\n\n\n\n\n\n\n\n\nType\nDefault\nDetails\n\n\n\n\nhypothesis_lines\nList\n\nArray of hypotheses.\n\n\nreference_lines\nList\n\nArray of references.\n\n\nsourcelang\nstr\n\nSource language identifier.\n\n\ntargetlang\nstr\n\nTarget language identifier.\n\n\ntest_set_name\nstr\n\nName of test set.\n\n\ntest_date\nstr\n\nDate of test as ISO-8601 formatted string.\n\n\nmtengine\nstr\n\nName of the tested MT engine.\n\n\nscore_pathname\nstr\n\nPath for results CSV file.\n\n\nscore_fname\nstr\n\nFile name for results CSV file.\n\n\ndomain\nstr\n\nDomain string if applicable.\n\n\nnormalized\nbool\nFalse\nIf True, applies basic tokenization to sentences.\n\n\nno_punct\nbool\nFalse\nIf True, removes punctuations from sentences.\n\n\nasian_support\nbool\nFalse\nIf True, adds support for Asian character processing.\n\n\ncase_sensitive\nbool\nFalse\nIf True, does not lowercase sentences."
+  },
+  {
+    "objectID": "modernmt.html",
+    "href": "modernmt.html",
+    "title": "modernmt",
+    "section": "",
+    "text": "source\n\nmodernmttranslate\n\n modernmttranslate (adaptive=False, adaptation_tm=None,\n                    reference_tms=None)\n\nClass to get translations from the ModernMT API\n\nsource\n\n\nmodernmttranslate.create_adaptation_tm\n\n modernmttranslate.create_adaptation_tm ()\n\nFunction to create empty translation memory (TM) for adaptative MT.\n\nsource\n\n\nmodernmttranslate.add_reference_translation\n\n modernmttranslate.add_reference_translation (tuid, sourcelang,\n                                              targetlang, source,\n                                              reference)\n\nFunction to submit a new reference translation (most often post-edited translation) to the adaptation TM.\n\n\n\n\n\n\n\n\n\nType\nDetails\n\n\n\n\ntuid\n\nUnique ID of the translation segment - if it exists, the segment gets overwritten\n\n\nsourcelang\nstr\nSource language identifier (BCP-47 format).\n\n\ntargetlang\nstr\nTarget language identifier (BCP-47 format).\n\n\nsource\nstr\nSource text.\n\n\nreference\nstr\nReference translation, possibly post-edited from machine translation.\n\n\n\n\nsource\n\n\nmodernmttranslate.check_langpair\n\n modernmttranslate.check_langpair (sourcelang, targetlang)\n\nFunction to verify if a language pair identified by language ids is supported\n\n\n\n\n\n\n\n\n\nType\nDetails\n\n\n\n\nsourcelang\nstr\nSource language identifier (BCP-47 format).\n\n\ntargetlang\nstr\nTarget language identifier (BCP-47 format).\n\n\nReturns\nbool\nReturns True if language pair is supported, otherwise False.\n\n\n\n\nsource\n\n\nmodernmttranslate.translate_text\n\n modernmttranslate.translate_text (sourcelang, targetlang, text,\n                                   timeout=5)\n\nFunction to translate text into the target language\n\n\n\n\nType\nDefault\nDetails\n\n\n\n\nsourcelang\nstr\n\nSource language identifier (BCP-47 format).\n\n\ntargetlang\nstr\n\nTarget language identifier (BCP-47 format).\n\n\ntext\nstr\n\nSource text that is to be translated.\n\n\ntimeout\nint\n5\nTimeout for translation request in seconds.\n\n\nReturns\nstr\n\nTranslated text."
+  },
+  {
+    "objectID": "util.html",
+    "href": "util.html",
+    "title": "util",
+    "section": "",
+    "text": "source\n\nutil\n\n util ()\n\nClass with several utility functions\n\nsource\n\n\nutil.normalize_quotes\n\n util.normalize_quotes (text)\n\nFunction to normalize various Unicode single quotes into U+0027 (Apostrophe) and double quotes into U+0022 (Quotation Mark)"
+  }
+]

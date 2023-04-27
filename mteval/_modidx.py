@@ -2,8 +2,8 @@
 
 d = { 'settings': { 'branch': 'main',
                 'doc_baseurl': '/mteval',
-                'doc_host': 'https://polyglottech.github.io',
-                'git_url': 'https://github.com/polyglottech/mteval',
+                'doc_host': 'https://achimr.github.io',
+                'git_url': 'https://github.com/achimr/mteval',
                 'lib_path': 'mteval'},
   'syms': { 'mteval.awsmt': { 'mteval.awsmt.awstranslate': ('awsmt.html#awstranslate', 'mteval/awsmt.py'),
                               'mteval.awsmt.awstranslate.__init__': ('awsmt.html#awstranslate.__init__', 'mteval/awsmt.py'),

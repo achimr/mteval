@@ -90,7 +90,7 @@ Run the following cell to install `mteval` from PyPI
 Run the following cell to install `mteval` from the Github repository
 
 ``` python
-!pip install git+https://github.com/polyglottech/mteval.git
+!pip install git+https://github.com/achimr/mteval.git
 ```
 
 ``` python

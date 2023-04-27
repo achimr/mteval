@@ -5,7 +5,7 @@ mteval
 
 <div>
 
-[![](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/polyglottech/mteval/blob/main/nbs/index.ipynb)
+[![](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/achimr/mteval/blob/main/nbs/index.ipynb)
 
 </div>
 
